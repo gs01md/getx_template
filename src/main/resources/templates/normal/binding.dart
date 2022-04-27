@@ -1,10 +1,13 @@
 import 'package:get/get.dart';
-
 import 'logic.dart';
+import 'provider.dart';
+import 'repository.dart';
 
-class @nameBinding extends Bindings {
+class @nameBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => @nameLogic());
+    Get.lazyPut<@nameInterfaceProvider>(() => @nameProvider());
+    Get.lazyPut<@nameInterfaceRepository>(() => @nameRepository(provider: Get.find()));
+    Get.lazyPut(() => @nameController(repository: Get.find()));
   }
 }

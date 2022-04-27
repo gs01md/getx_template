@@ -124,9 +124,13 @@ class NewGetX : AnAction() {
     }
 
     private fun generateDefault(path: String, prefixName: String) {
-        generateFile("state.dart", path, "$prefixName${data.module.stateName.lowercase(Locale.getDefault())}.dart")
+
+//        generateFile("binding.dart", path, "${prefixName}binding.dart")
         generateFile("logic.dart", path, "$prefixName${data.module.logicName.lowercase(Locale.getDefault())}.dart")
         generateFile("view.dart", path, "$prefixName${data.module.viewFileName.lowercase(Locale.getDefault())}.dart")
+        generateFile("entity.dart", path, "${prefixName}entity.dart")
+        generateFile("provider.dart", path, "$prefixName${data.module.providerName.lowercase(Locale.getDefault())}.dart")
+        generateFile("repository.dart", path, "$prefixName${data.module.repositoryName.lowercase(Locale.getDefault())}.dart")
     }
 
     private fun generateEasy(path: String, prefixName: String) {
@@ -188,27 +192,73 @@ class NewGetX : AnAction() {
         //replace binding file
         content = replaceBinding(content, inputFileName, prefixName)
 
+        //replace logic file
+        content = replaceProvider(content, inputFileName, prefixName)
+
+        //replace binding file
+        content = replaceRepository(content, inputFileName, prefixName)
+
         //replace state file
-        content = replaceState(content, inputFileName)
+        content = replaceState(content, inputFileName,prefixName)
 
         content = content.replace("@name".toRegex(), name)
 
         return content
     }
 
+
+    private fun replaceProvider(content: String, inputFileName: String, prefixName: String): String {
+        var tempContent = content
+        if (!inputFileName.contains("provider.dart")) {
+            return tempContent
+        }
+
+//        tempContent = tempContent.replace(
+//            "entity.dart".toRegex(),
+//            "$prefixName${data.module.stateName.lowercase(Locale.getDefault())}.dart"
+//        )
+
+//        tempContent = tempContent.replace("@nameInterfaceProvider".toRegex(), "${data.module.providerInterfaceName}")
+//        tempContent = tempContent.replace("@nameProvider".toRegex(), "${data.module.providerName}")
+        tempContent = tempContent.replace("State", "Entity")
+        tempContent = tempContent.replace("state", "entity")
+
+
+        return tempContent
+    }
+
+    private fun replaceRepository(content: String, inputFileName: String, prefixName: String): String {
+        var tempContent = content
+        if (!inputFileName.contains("repository.dart")) {
+            return tempContent
+        }
+
+//        tempContent = tempContent.replace(
+//            "entity.dart".toRegex(),
+//            "$prefixName${data.module.stateName.lowercase(Locale.getDefault())}.dart"
+//        )
+//
+//        tempContent = tempContent.replace("@nameInterfaceRepository".toRegex(), "${data.module.repositoryInterfaceName}")
+//        tempContent = tempContent.replace("@nameRepository".toRegex(), "${data.module.repositoryName}")
+//        tempContent = tempContent.replace("State".toRegex(), "${data.module.stateName}")
+//        tempContent = tempContent.replace("state".toRegex(), data.module.stateName.lowercase(Locale.getDefault()))
+
+        tempContent = tempContent.replace("State", "Entity")
+        tempContent = tempContent.replace("state", "entity")
+
+        return tempContent
+    }
+
     private fun replaceLogic(content: String, inputFileName: String, prefixName: String): String {
         var tempContent = content
+
         if (!inputFileName.contains("logic.dart")) {
             return tempContent
         }
 
-        tempContent = tempContent.replace(
-            "state.dart".toRegex(),
-            "$prefixName${data.module.stateName.lowercase(Locale.getDefault())}.dart"
-        )
         tempContent = tempContent.replace("Logic".toRegex(), data.module.logicName)
-        tempContent = tempContent.replace("State".toRegex(), data.module.stateName)
-        tempContent = tempContent.replace("state".toRegex(), data.module.stateName.lowercase(Locale.getDefault()))
+        tempContent = tempContent.replace("State", "Entity")
+        tempContent = tempContent.replace("state", "entity")
 
         return tempContent
     }
@@ -219,6 +269,9 @@ class NewGetX : AnAction() {
             return tempContent
         }
 
+        tempContent = tempContent.replace("State", "Entity")
+        tempContent = tempContent.replace("state", "entity")
+
         //deal binding function
         if (data.function.addBinding) {
             tempContent = tempContent.replace("Get.put\\(@nameLogic\\(\\)\\)".toRegex(), "Get.find<@nameLogic>()")
@@ -226,7 +279,6 @@ class NewGetX : AnAction() {
 
         //remove lint
         if (!data.function.lintNorm || (!data.setting.lint && data.function.lintNorm)) {
-            tempContent = tempContent.replace("\\s*\nimport 'state.dart';".toRegex(), "")
             tempContent = tempContent.replace("final @nameLogic".toRegex(), "final")
             tempContent = tempContent.replace("final @nameState".toRegex(), "final")
         }
@@ -247,26 +299,26 @@ class NewGetX : AnAction() {
             "logic.dart".toRegex(),
             "$prefixName${data.module.logicName.lowercase(Locale.getDefault())}.dart"
         )
-        tempContent = tempContent.replace(
-            "state.dart".toRegex(),
-            "$prefixName${data.module.stateName.lowercase(Locale.getDefault())}.dart"
-        )
+//        tempContent = tempContent.replace(
+//            "entity.dart".toRegex(),
+//            "$prefixName${data.module.stateName.lowercase(Locale.getDefault())}.dart"
+//        )
         tempContent = tempContent.replace("Page".toRegex(), data.module.viewName)
         tempContent = tempContent.replace("Logic".toRegex(), data.module.logicName)
         tempContent = tempContent.replace("logic".toRegex(), data.module.logicName.lowercase(Locale.getDefault()))
-        tempContent = tempContent.replace("@nameState".toRegex(), "@name${data.module.stateName}")
-        tempContent = tempContent.replace("state".toRegex(), data.module.stateName.lowercase(Locale.getDefault()))
+
 
         return tempContent
     }
 
-    private fun replaceState(content: String, inputFileName: String): String {
+    private fun replaceState(content: String, inputFileName: String, prefixName: String ): String {
         var tempContent = content
-        if (!inputFileName.contains("state.dart")) {
+        if (!inputFileName.contains("entity.dart")) {
             return tempContent
         }
 
-        tempContent = tempContent.replace("State".toRegex(), data.module.stateName)
+        tempContent = tempContent.replace("State", "Entity")
+
 
         return tempContent
     }
@@ -284,6 +336,12 @@ class NewGetX : AnAction() {
                 "$prefixName${data.module.logicName.lowercase(Locale.getDefault())}.dart"
             )
         }
+
+//        tempContent = tempContent.replace("@nameInterfaceRepository".toRegex(), "${data.module.repositoryInterfaceName}")
+//        tempContent = tempContent.replace("@nameRepository".toRegex(), "${data.module.repositoryName}")
+//        tempContent = tempContent.replace("@nameState".toRegex(), "${data.module.stateName}")
+//        tempContent = tempContent.replace("@nameInterfaceProvider".toRegex(), "${data.module.providerInterfaceName}")
+//        tempContent = tempContent.replace("@nameProvider".toRegex(), "${data.module.providerName}")
 
         return tempContent
     }

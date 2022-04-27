@@ -4,10 +4,12 @@ import com.google.gson.Gson
 import com.intellij.util.xmlb.Converter
 
 data class TemplateInfo(
-    var logic: String = "Logic",
+    var logic: String = "Controller",
     var view: String = "Page",
     var viewFile: String = "View",
-    var state: String = "State",
+    var state: String = "Entity",
+    var provider: String = "Provider",
+    var repository: String = "Repository",
     var selected: Boolean = false,
 )
 
@@ -34,12 +36,19 @@ data class FunctionInfo(
 //module name
 data class ModuleNameSuffix(
     //Logical layer name
-    var logicName: String = "Logic",
+    var logicName: String = "Controller",
     //view layer name
     var viewName: String = "Page",
     var viewFileName: String = "View",
     //state layer name
-    var stateName: String = "State",
+    var stateName: String = "Entity",
+    var providerName: String = "Provider",
+    //state layer name
+    var repositoryName: String = "Repository",
+
+    var providerInterfaceName: String = "InterfaceProvider",
+    //state layer name
+    var repositoryInterfaceName: String = "InterfaceRepository",
 )
 
 //Setting Info
